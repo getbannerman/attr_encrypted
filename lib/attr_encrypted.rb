@@ -142,17 +142,19 @@ module AttrEncrypted
     attributes.each do |attribute|
       encrypted_attribute_name = (options[:attribute] ? options[:attribute] : [options[:prefix], attribute, options[:suffix]].join).to_sym
 
-      instance_methods_as_symbols = attribute_instance_methods_as_symbols
-      attr_reader encrypted_attribute_name unless instance_methods_as_symbols.include?(encrypted_attribute_name)
-      attr_writer encrypted_attribute_name unless instance_methods_as_symbols.include?(:"#{encrypted_attribute_name}=")
+      # See https://github.com/attr-encrypted/attr_encrypted/issues/217
+      #
+      # instance_methods_as_symbols = attribute_instance_methods_as_symbols
+      # attr_reader encrypted_attribute_name unless instance_methods_as_symbols.include?(encrypted_attribute_name)
+      # attr_writer encrypted_attribute_name unless instance_methods_as_symbols.include?(:"#{encrypted_attribute_name}=")
 
-      iv_name = "#{encrypted_attribute_name}_iv".to_sym
-      attr_reader iv_name unless instance_methods_as_symbols.include?(iv_name)
-      attr_writer iv_name unless instance_methods_as_symbols.include?(:"#{iv_name}=")
+      # iv_name = "#{encrypted_attribute_name}_iv".to_sym
+      # attr_reader iv_name unless instance_methods_as_symbols.include?(iv_name)
+      # attr_writer iv_name unless instance_methods_as_symbols.include?(:"#{iv_name}=")
 
-      salt_name = "#{encrypted_attribute_name}_salt".to_sym
-      attr_reader salt_name unless instance_methods_as_symbols.include?(salt_name)
-      attr_writer salt_name unless instance_methods_as_symbols.include?(:"#{salt_name}=")
+      # salt_name = "#{encrypted_attribute_name}_salt".to_sym
+      # attr_reader salt_name unless instance_methods_as_symbols.include?(salt_name)
+      # attr_writer salt_name unless instance_methods_as_symbols.include?(:"#{salt_name}=")
 
       define_method(attribute) do
         instance_variable_get("@#{attribute}") || instance_variable_set("@#{attribute}", decrypt(attribute, send(encrypted_attribute_name)))
